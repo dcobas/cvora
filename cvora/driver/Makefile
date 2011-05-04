@@ -11,7 +11,7 @@ KERNELSRC=/acc/sys/$(CPU)/usr/src/kernels/$(KVER)
 
 include /acc/dsc/src/co/Make.auto
 
-all: modules libs
+all: modules libs test
 
 modules: 
 	cp Module.symvers.vmebus Module.symvers
@@ -19,6 +19,7 @@ modules:
 clean:
 	rm -f *.o *.a *.pyc *.so *.ko *.mod.*
 	rm -rf $(CPU)
+	make -C test clean
 
 COMPILE_TIME:=$(shell date +%s)
 
@@ -38,3 +39,6 @@ vmeio_support.$(CPU).a: vmeio_support.$(CPU).o
 vmeio_support.$(CPU).so: vmeio_support.$(CPU).o
 	-$(RM) $@
 	$(CC) $(CFLAGS) -o $@ -shared $^
+
+test: vmeio_support.$(CPU).a
+	make -C test
