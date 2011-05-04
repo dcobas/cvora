@@ -6,20 +6,24 @@
  *
  */
 
+#if 0
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sched.h>
-#include <fcntl.h>
 #include <string.h>
-#include <sys/ioctl.h>
 #include <sys/file.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 #include <time.h>
 #include <dlfcn.h>
+
+#endif
 #include <unistd.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 #include "vmeio_support.h"
 
@@ -71,7 +75,7 @@ handle_t *h;
       close(fnum);
       return NULL;
    }
-   bzero((void *) h, sizeof(handle_t));
+   memset(h, 0, sizeof(*h));
 
    h->file = fnum;
    h->winum = 1;
