@@ -17,10 +17,10 @@
  *        object can be used multiple times.
  *
  * luns, Logical unit numbers (not optional)
- * lvls, Interrupt levels (either not specified or one for each lun)
- * vecs, Interrupt vectors (same as lvls)
- * vme1, First VME base address (not optional)
- * vme2, Second VME base address (either not specified or one for each lun)
+ * level, Interrupt levels (either not specified or one for each lun)
+ * vectors, Interrupt vectors (same as level)
+ * base_address1, First VME base address (not optional)
+ * base_address2, Second VME base address (either not specified or one for each lun)
  *
  * These parameters would normally be specified once per lun.
  * In this case the driver will use the first value for all luns.
@@ -29,34 +29,34 @@
  * be interesting for example to map one module and use only DMA
  * access for all the others.
  *
- * amd1, First address modifier (not optional, at least one specified)
- * amd2, Second address modifier (optional)
- * dwd1, First data width (not optional, at least one specified)
- * dwd2, Second data width (optional)
- * win1, First window size (not optional, at least one specified)
- * win2, Second window size (optional)
+ * am1, First address modifier (not optional, at least one specified)
+ * am2, Second address modifier (optional)
+ * data_width1, First data width (not optional, at least one specified)
+ * data_width2, Second data width (optional)
+ * size1, First window size (not optional, at least one specified)
+ * size2, Second window size (optional)
  * nmap, No map window flag, 1=DMA only (defaults to zero)
- * isrc, Location of interrupt source reg in vme1 (optional)
+ * isrc, Location of interrupt source reg in base_address1 (optional)
  *
  * Installation via insmod parameters example
  *
  * Example: cp vmeio.ko mytest.ko
  *          insmod mytest.ko dname="mytest"
  *                           luns= 136,   99,    46
- *                           vme1= 0x100, 0x200, 0x300
- *                           amd1= 0x29 win1=0x10 dwd1=2
+ *                           base_address1= 0x100, 0x200, 0x300
+ *                           am1= 0x29 size1=0x10 data_width1=2
  *
  * Example: insmod ctrv.ko luns= 1,         2,
- *                         vme1= 0xC100000, 0xC200000
- *                         vme2= 0x100,     0x200
- *                         lvls= 2,         2
- *                         vecs= 0xC8,      0xC9
- *                         amd1= 0x39
- *                         amd2= 0x29
- *                         win1= 0x10000
- *                         win2= 0x100
- *                         dwd1= 4
- *                         dwd2= 2
+ *                         base_address1= 0xC100000, 0xC200000
+ *                         base_address2= 0x100,     0x200
+ *                         level= 2,         2
+ *                         vectors= 0xC8,      0xC9
+ *                         am1= 0x39
+ *                         am2= 0x29
+ *                         size1= 0x10000
+ *                         size2= 0x100
+ *                         data_width1= 4
+ *                         data_width2= 2
  *                         isrc= 0
  *
  * ======================================================================
@@ -106,23 +106,23 @@ MODULE_SUPPORTED_DEVICE("Any VME device");
  * Indexed by minor device number
  */
 
-static long luns[DRV_MAX_DEVICES];	/* Logical unit numbers */
-static long lvls[DRV_MAX_DEVICES];	/* Interrupt levels */
-static long vecs[DRV_MAX_DEVICES];	/* Interrupt vectors */
-static long vme1[DRV_MAX_DEVICES];	/* First VME base address */
-static long vme2[DRV_MAX_DEVICES];	/* Second VME base address */
+static long lun[DRV_MAX_DEVICES];	/* Logical unit numbers */
+static long level[DRV_MAX_DEVICES];	/* Interrupt levels */
+static long vectors[DRV_MAX_DEVICES];	/* Interrupt vectors */
+static long base_address1[DRV_MAX_DEVICES];	/* First VME base address */
+static long base_address2[DRV_MAX_DEVICES];	/* Second VME base address */
 
 /* Single value parameter handling */
 /* Usually the same for each lun.  */
 
-static long amd1[DRV_MAX_DEVICES];	/* First address modifier */
-static long amd2[DRV_MAX_DEVICES];	/* Second address modifier */
-static long dwd1[DRV_MAX_DEVICES];	/* First data width */
-static long dwd2[DRV_MAX_DEVICES];	/* Second data width */
-static long win1[DRV_MAX_DEVICES];	/* First window size */
-static long win2[DRV_MAX_DEVICES];	/* Second window size */
+static long am1[DRV_MAX_DEVICES];	/* First address modifier */
+static long am2[DRV_MAX_DEVICES];	/* Second address modifier */
+static long data_width1[DRV_MAX_DEVICES];	/* First data width */
+static long data_width2[DRV_MAX_DEVICES];	/* Second data width */
+static long size1[DRV_MAX_DEVICES];	/* First window size */
+static long size2[DRV_MAX_DEVICES];	/* Second window size */
 static long nmap[DRV_MAX_DEVICES];	/* No map window flag, 1=DMA only */
-static long isrc[DRV_MAX_DEVICES];	/* Location of interrupt source reg in vme1 */
+static long isrc[DRV_MAX_DEVICES];	/* Location of interrupt source reg in base_address1 */
 
 /* These parameter counts must equal the number of luns */
 /* or be equal to zero if not used. */
@@ -145,35 +145,35 @@ static unsigned int win2_num;	/* Can be = "0" if not used */
 static unsigned int nmap_num;	/* Its quite possible this is > "1" */
 static unsigned int isrc_num;	/* Normally this value is = "1" */
 
-module_param_array(luns, long, &luns_num, 0444);	/* Vector */
-module_param_array(lvls, long, &lvls_num, 0444);	/* Vector */
-module_param_array(vecs, long, &vecs_num, 0444);	/* Vector */
-module_param_array(vme1, long, &vme1_num, 0444);	/* Vector */
-module_param_array(vme2, long, &vme2_num, 0444);	/* Vector */
+module_param_array(lun, long, &luns_num, 0444);	/* Vector */
+module_param_array(level, long, &lvls_num, 0444);	/* Vector */
+module_param_array(vectors, long, &vecs_num, 0444);	/* Vector */
+module_param_array(base_address1, long, &vme1_num, 0444);	/* Vector */
+module_param_array(base_address2, long, &vme2_num, 0444);	/* Vector */
 
-module_param_array(amd1, long, &amd1_num, 0444);
-module_param_array(amd2, long, &amd2_num, 0444);
-module_param_array(dwd1, long, &dwd1_num, 0444);
-module_param_array(dwd2, long, &dwd2_num, 0444);
-module_param_array(win1, long, &win1_num, 0444);
-module_param_array(win2, long, &win2_num, 0444);
+module_param_array(am1, long, &amd1_num, 0444);
+module_param_array(am2, long, &amd2_num, 0444);
+module_param_array(data_width1, long, &dwd1_num, 0444);
+module_param_array(data_width2, long, &dwd2_num, 0444);
+module_param_array(size1, long, &win1_num, 0444);
+module_param_array(size2, long, &win2_num, 0444);
 module_param_array(nmap, long, &nmap_num, 0444);
 module_param_array(isrc, long, &isrc_num, 0444);
 
-MODULE_PARM_DESC(luns, "Logical unit numbers");
-MODULE_PARM_DESC(lvls, "Interrupt levels");
-MODULE_PARM_DESC(vecs, "Interrupt vectors");
-MODULE_PARM_DESC(vme1, "First map base addresses");
-MODULE_PARM_DESC(vme2, "Second map base addresses");
+MODULE_PARM_DESC(lun, "Logical unit numbers");
+MODULE_PARM_DESC(level, "Interrupt levels");
+MODULE_PARM_DESC(vectors, "Interrupt vectors");
+MODULE_PARM_DESC(base_address1, "First map base addresses");
+MODULE_PARM_DESC(base_address2, "Second map base addresses");
 
-MODULE_PARM_DESC(amd1, "First VME address modifier");
-MODULE_PARM_DESC(amd2, "Second VME address modifier");
-MODULE_PARM_DESC(dwd1, "First data width 1,2,4,8 bytes");
-MODULE_PARM_DESC(dwd2, "Second data width 1,2,4,8 bytes");
-MODULE_PARM_DESC(win1, "First window size in bytes");
-MODULE_PARM_DESC(win2, "Second window size in bytes");
+MODULE_PARM_DESC(am1, "First VME address modifier");
+MODULE_PARM_DESC(am2, "Second VME address modifier");
+MODULE_PARM_DESC(data_width1, "First data width 1,2,4,8 bytes");
+MODULE_PARM_DESC(data_width2, "Second data width 1,2,4,8 bytes");
+MODULE_PARM_DESC(size1, "First window size in bytes");
+MODULE_PARM_DESC(size2, "Second window size in bytes");
 MODULE_PARM_DESC(nmap, "No VME map flags, 1=DMA only");
-MODULE_PARM_DESC(isrc, "Location of interrupt source reg in vme1");
+MODULE_PARM_DESC(isrc, "Location of interrupt source reg in base_address1");
 
 static char dname[64] = { 0 };
 
@@ -585,15 +585,15 @@ int vmeio_install(void)
 
 	/* Default single parameters to the first specified */
 
-	set_remaining_null(amd1, amd1_num);
-	set_remaining_null(amd2, amd2_num);
-	set_remaining_null(dwd1, dwd1_num);
-	set_remaining_null(dwd2, dwd2_num);
-	set_remaining_null(win1, win1_num);
-	set_remaining_null(win2, win2_num);
+	set_remaining_null(am1, amd1_num);
+	set_remaining_null(am2, amd2_num);
+	set_remaining_null(data_width1, dwd1_num);
+	set_remaining_null(data_width2, dwd2_num);
+	set_remaining_null(size1, win1_num);
+	set_remaining_null(size2, win2_num);
 	set_remaining_null(nmap, nmap_num);
 	set_remaining_null(isrc, isrc_num);
-	set_remaining_null(amd2, amd2_num);
+	set_remaining_null(am2, amd2_num);
 
 	/* Build module contexts */
 
@@ -604,25 +604,25 @@ int vmeio_install(void)
 
 		memset(dev, 0, sizeof(*dev));
 
-		dev->lun = luns[i];
+		dev->lun = lun[i];
 
-		map0->base_address     = vme1[i];
-		map0->address_modifier = amd1[i];
-		map0->data_width       = dwd1[i];
-		map0->window_size      = win1[i];
+		map0->base_address     = base_address1[i];
+		map0->address_modifier = am1[i];
+		map0->data_width       = data_width1[i]/8;
+		map0->window_size      = size1[i];
 		map0->vaddr            = NULL;
 		map0->bus_error_handler = NULL;
 
-		map1->base_address     = vme2[i];
-		map1->address_modifier = amd2[i];
-		map1->data_width       = dwd2[i];
-		map1->window_size      = win2[i];
+		map1->base_address     = base_address2[i];
+		map1->address_modifier = am2[i];
+		map1->data_width       = data_width2[i]/8;
+		map1->window_size      = size2[i];
 		map1->vaddr            = NULL;
 		map1->bus_error_handler = NULL;
 
 		dev->isrc = isrc[i];
-		dev->lvl  = lvls[i];
-		dev->vec  = vecs[i];
+		dev->lvl  = level[i];
+		dev->vec  = vectors[i];
 		dev->nmap = nmap[i];
 
 		init_waitqueue_head(&dev->queue);
