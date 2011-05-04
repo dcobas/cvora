@@ -20,6 +20,9 @@ clean:
 	rm -f *.so
 	make -C $(KERNELSRC) M=`pwd` KVER=$(KVER) clean
 	make -C test clean
+	make -C doc clean
+doc:
+	make -C doc
 
 COMPILE_TIME:=$(shell date +%s)
 

@@ -1,10 +1,14 @@
-DOXY_INSTPATH = /acc/doc/html/private/coht/doxy/lib/vmeio
+COHTDOXY=/acc/src/dsc/drivers/coht/doxy
 
 all:
-	echo Make documentation for vmeio support library
+	echo Make documentation for libcvora support library
 	rm -f ,*.h
-	rm -rf doc
-	doxy/doxy.sh -n"Vmeio support library API" -o "doc" ../../include/vmeio_support.h ../../include/vmeio.h
+	rm -rf html latex man 
+	cp $(COHTDOXY)/default.doxycfg .
+	sh doxy.sh -n "CVORA user library API" -o "." ../libcvora.h
+
+clean:
+	rm -rf html latex man default.doxycfg
 
 doxy_install: all
 	mkdir -p $(DOXY_INSTPATH)
