@@ -1,10 +1,10 @@
-DOXY_INSTPATH = /var/www/html/private/coht/doxy/vmeio
+DOXY_INSTPATH = /acc/doc/html/private/coht/doxy/lib/vmeio
 
 all:
-	echo Make documentation for vmeio driver
+	echo Make documentation for vmeio support library
 	rm -f ,*.h
 	rm -rf doc
-	doxy/doxy.sh -n"Vmeio driver" -o "doc" ../vmeio.h
+	doxy/doxy.sh -n"Vmeio support library API" -o "doc" ../../include/vmeio_support.h ../../include/vmeio.h
 
 doxy_install: all
 	mkdir -p $(DOXY_INSTPATH)
