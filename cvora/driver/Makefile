@@ -17,8 +17,8 @@ modules:
 	cp Module.symvers.vmebus Module.symvers
 	make -C $(KERNELSRC) M=`pwd` KVER=$(KVER) modules
 clean:
-	rm -f *.o *.a *.pyc *.so *.ko *.mod.*
-	rm -rf $(CPU)
+	rm -f *.so
+	make -C $(KERNELSRC) M=`pwd` KVER=$(KVER) clean
 	make -C test clean
 
 COMPILE_TIME:=$(shell date +%s)
@@ -27,11 +27,16 @@ CFLAGS= -DCOMPILE_TIME=$(COMPILE_TIME) -g -Wall -fPIC
 
 SRCS=vmeio_support.c vmeio_support.h
 
-libs: vmeio_support.$(CPU).so vmeio_support.$(CPU).a
+libs: vmeio_support.$(CPU).so vmeio_support.$(CPU).a cvora_user.$(CPU).a
 
 vmeio_support.$(CPU).o: vmeio_support.c
-
 vmeio_support.$(CPU).a: vmeio_support.$(CPU).o
+	-$(RM) $@
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
+
+cvora_user.$(CPU).o: cvora_user.c cvora_user.h cvora_hard.h
+cvora_user.$(CPU).a: cvora_user.$(CPU).o
 	-$(RM) $@
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
@@ -42,3 +47,4 @@ vmeio_support.$(CPU).so: vmeio_support.$(CPU).o
 
 test: vmeio_support.$(CPU).a
 	make -C test
+

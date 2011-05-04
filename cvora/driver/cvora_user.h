@@ -8,7 +8,7 @@
 #define CVORA_USER
 
 
-#include <vmeio_support.h>
+#include "vmeio_support.h"
 
 #ifdef __cplusplus
 extern "C" 
@@ -51,7 +51,7 @@ extern "C"
  * one module.
  */
 
-#include <cvora_hard.h>
+#include "cvora_hard.h"
 
 /**
  * Hardware definitions for registers defined in cvora_hard.h

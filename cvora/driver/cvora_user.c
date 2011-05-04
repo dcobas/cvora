@@ -36,7 +36,7 @@
  * int   cvora_write_reg(void *handle, int reg_num, int *reg_val);
  */
 
-#include <cvora_user.h>
+#include "cvora_user.h"
 
 /**
  * Private data structure for library handle
