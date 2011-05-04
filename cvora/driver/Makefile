@@ -13,9 +13,6 @@ KERNELSRC=/acc/sys/$(CPU)/usr/src/kernels/$(KVER)
 modules: 
 	cp Module.symvers.vmebus Module.symvers
 	make -C $(KERNELSRC) M=`pwd` KVER=$(KVER) modules
-
-# rm vmeio.c
-
 clean:
 	rm -f *.o *.a *.pyc *.so
 	rm -rf $(CPU)
