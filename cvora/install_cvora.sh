@@ -16,7 +16,7 @@ INSMOD_CMD="insmod $DRIVER_NAME.ko $INSMOD_ARGS"
 echo "installing $DRIVER_NAME by insmod cvora $INSMOD_ARGS"
 sh -c "$INSMOD_CMD"
 
-MAJOR=`cat /proc/devices | awk '$2 == "$DRIVER_NAME" {print $1}'`
+MAJOR=`cat /proc/devices | awk '$2 == "'$DRIVER_NAME'" {print $1}'`
 if [ -z "$MAJOR" ]; then
 	echo "driver $DRIVER_NAME not installed!"
 	exit 1
