@@ -4,21 +4,8 @@
  * Julian Lewis BE/CO/HT Tue 19th October 2010
  */
 
-#include <unistd.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <sched.h>
-#include <fcntl.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/file.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <dlfcn.h>
-#include <unistd.h>
-#include <errno.h>
 
 /**
  * Predefined cvora support library routines on which this library
@@ -36,7 +23,7 @@
  * int   cvora_write_reg(void *handle, int reg_num, int *reg_val);
  */
 
-#include "cvora_user.h"
+#include "libcvora.h"
 
 /**
  * Private data structure for library handle

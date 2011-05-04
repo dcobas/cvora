@@ -6,18 +6,6 @@
  *
  */
 
-#if 0
-#include <unistd.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <sched.h>
-#include <string.h>
-#include <sys/file.h>
-#include <math.h>
-#include <time.h>
-#include <dlfcn.h>
-
-#endif
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
