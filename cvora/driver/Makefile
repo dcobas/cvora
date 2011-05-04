@@ -5,6 +5,9 @@
 # KVER=2.6.31.6-rt19
 # KVER=2.6.24.7-rt27
 
+CPU=L865
+KVER=2.6.24.7-rt27
+
 KERNELSRC=/acc/sys/$(CPU)/usr/src/kernels/$(KVER)
 
 modules: 
