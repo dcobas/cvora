@@ -17,10 +17,8 @@ modules:
 	cp Module.symvers.vmebus Module.symvers
 	make -C $(KERNELSRC) M=`pwd` KVER=$(KVER) modules
 clean:
-	rm -f *.o *.a *.pyc *.so
+	rm -f *.o *.a *.pyc *.so *.ko *.mod.*
 	rm -rf $(CPU)
-	make -C $(KERNELSRC) M=`pwd` clean
-
 
 COMPILE_TIME:=$(shell date +%s)
 
@@ -40,8 +38,3 @@ vmeio_support.$(CPU).a: vmeio_support.$(CPU).o
 vmeio_support.$(CPU).so: vmeio_support.$(CPU).o
 	-$(RM) $@
 	$(CC) $(CFLAGS) -o $@ -shared $^
-
-clean:
-	rm -f vmeio_support.$(CPU).o
-	rm -f vmeio_support.$(CPU).a
-	rm -f vmeio_support.$(CPU).so
