@@ -21,8 +21,7 @@
 #include <dlfcn.h>
 #include <unistd.h>
 #include <errno.h>
-
-#include <vmeio_support.h>
+#include "vmeio_support.h"
 
 /**
  * Internal handle structurs used only by the support library
