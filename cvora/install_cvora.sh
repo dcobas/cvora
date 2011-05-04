@@ -22,7 +22,7 @@ if [ -z "$MAJOR" ]; then
 	exit 1
 fi
 
-MINORS=`awk '/^#\+#/ && $6 == '"$MODULE_NAME"' { printf("%s", $7) }' /etc/transfer.ref`
+MINORS=`awk '/^#\+#/ && $6 == "'$MODULE_NAME'" { printf("%s", $7) }' /etc/transfer.ref`
 echo "creating device nodes for driver $DRIVER_NAME, major $MAJOR, minors $MINORS"
 for MINOR in $MINORS; do
     rm -f /dev/cvora.$MINOR
