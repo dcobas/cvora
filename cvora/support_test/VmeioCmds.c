@@ -8,9 +8,9 @@
 #include <math.h>
 #include <time.h>   /* ctime */
 
-#include <vmeio_support.h>
+#include "vmeio_support.h"
 
-#include <Cmds.h>
+#include "Cmds.h"
 
 #ifndef COMPILE_TIME
 #define COMPILE_TIME 0

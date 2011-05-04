@@ -2,13 +2,15 @@
 # Makefile to produce vmeio support library test program
 #================================================================
 
+CPU=L865
+KVER=2.6.24.7-rt27
 include /acc/dsc/src/co/Make.auto
 
 COMPILE_TIME:=$(shell date +%s)
 
-CFLAGS = -g -Wall -I. -I../include -I../driver -DCOMPILE_TIME=$(COMPILE_TIME)
+CFLAGS = -g -Wall -I../driver -DCOMPILE_TIME=$(COMPILE_TIME)
 
-LDLIBS= ../support/vmeio_support.L865.a
+LDLIBS= ../driver/vmeio_support.L865.a
 
 ALL  = vmeiotest.$(CPU).o vmeiotest.$(CPU)
 
