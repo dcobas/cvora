@@ -21,16 +21,6 @@ extern "C"
 #include "vmeio.h"
 
 /*
- * Define library entry points as a function of the driver name
- */
-
-
-
-
-
-
-
-/*
  * ============================================
  * Basic routines calling driver
  */
