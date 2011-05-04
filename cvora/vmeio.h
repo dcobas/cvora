@@ -28,6 +28,8 @@
 #endif
 #endif
 
+#define	DRV_MAX_DEVICES	32
+
 /**
  * Connect and read buffer
  * The interrupt counter is the total number of interrupts

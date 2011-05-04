@@ -75,8 +75,6 @@
  * DRV_MAX_DEVICES:    is the number of modules you expect to handle
  */
 
-#include "user_driver_parameters.h"
-
 #include <asm/io.h>
 #include <asm/uaccess.h>
 #include <linux/fs.h>
@@ -93,7 +91,7 @@
  */
 
 static int vmeio_major = 0;
-static char *vmeio_major_name = DRV_NAME;
+static char *vmeio_major_name = "cvora";
 
 MODULE_AUTHOR("Julian Lewis BE/CO/HT CERN");
 MODULE_LICENSE("GPL");

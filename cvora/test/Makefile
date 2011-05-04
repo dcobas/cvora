@@ -8,7 +8,7 @@ include /acc/dsc/src/co/Make.auto
 
 COMPILE_TIME:=$(shell date +%s)
 
-CFLAGS = -g -Wall -I.. -DCOMPILE_TIME=$(COMPILE_TIME)
+CFLAGS = -g -Wall -I.. -DCOMPILE_TIME=$(COMPILE_TIME) -DDRIVER_NAME=\"cvora\"
 
 LDLIBS= ../vmeio_support.L865.a
 

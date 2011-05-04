@@ -56,34 +56,34 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 struct vmeio_get_window_s win;
 int cc;
 
-   sh = OPEN(lun);
+   sh = cvora_open(lun);
    if (!sh) return NULL;
 
    ch = (struct cvora_handle_s *) malloc(sizeof(struct cvora_handle_s));
    if (!ch) return NULL;
    ch->hand = sh;
 
-   cc = GET_WINDOW(sh,&win);
+   cc = cvora_get_window(sh,&win);
    if(!cc) goto init_err;
-   bcopy(&win,&ch->win,sizeof(struct vmeio_get_window_s));
+   memmove(&ch->win, &win, sizeof(struct vmeio_get_window_s));
 
    ch->cmd  = CVA_CMD_POLARITY & CVA_POLARITY_POS;             /* Positive polarity */
    ch->cmd |= CVA_CMD_ENABLE_MODULE & CVA_ENABLE_MODULE;       /* Enable module */
    ch->cmd |= ch->win.vec << CVA_VECTOR_SHIFT;                 /* Interrupt vector */
    ch->cmd |= CVA_CMD_ENABLE_INTERRUPT & CVA_ENABLE_INTERRUPT; /* Enable interrupts */
-   cc = WRITE_REG(sh,CVA_REG_WO_CONTROL,&ch->cmd);
+   cc = cvora_write_reg(sh,CVA_REG_WO_CONTROL,&ch->cmd);
    if(!cc) goto init_err;
 
    ch->mode = CVA_MDE_PARALLEL;
-   cc = WRITE_REG(sh,CVA_REG_WO_MODE,&ch->mode);
+   cc = cvora_write_reg(sh,CVA_REG_WO_MODE,&ch->mode);
    if(!cc) goto init_err;
 
-   cc = READ_REG(sh,CVA_REG_RO_MODULE_ID,&ch->modid);
+   cc = cvora_read_reg(sh,CVA_REG_RO_MODULE_ID,&ch->modid);
    if(!cc) goto init_err;
    return (void *) ch;
 
 init_err:
-   CLOSE(ch->hand);
+   cvora_close(ch->hand);
    free(ch);
    return NULL;
 }
@@ -143,7 +143,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if ((ch) && (*mode>=CVA_MDES_FIRST) && (*mode <=CVA_MDES_LAST)) {
-      cc = WRITE_REG(ch->hand,CVA_REG_WO_MODE,mode);
+      cc = cvora_write_reg(ch->hand,CVA_REG_WO_MODE,mode);
       if (!cc) return 0;
       ch->mode = *mode;
       return 1;
@@ -165,7 +165,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if (ch) {
-      return READ_REG(ch->hand,CVA_REG_RO_STATUS,status);
+      return cvora_read_reg(ch->hand,CVA_REG_RO_STATUS,status);
    }
    return 0;
 }
@@ -185,7 +185,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if (ch) {
-      cc = WAIT(ch->hand,&event);
+      cc = cvora_wait(ch->hand,&event);
       if (cc <= 0) return 0;
       return 1;
    }
@@ -207,7 +207,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if (ch) {
-      cc = READ_REG(ch->hand,CVA_REG_RW_MEM_POINTER,&memp);
+      cc = cvora_read_reg(ch->hand,CVA_REG_RW_MEM_POINTER,&memp);
       if ((cc) && (memp >= CVA_MEM_MIN) && (memp <= CVA_MEM_MAX)) {
 	 *memsz = memp - CVA_MEM_MIN;
 	 return 1;
@@ -242,7 +242,7 @@ struct vmeio_riob_s riob;
       riob.bsize  = *actsz;
       riob.buffer = buf;
 
-      return DMA(ch->hand,&riob,0);
+      return cvora_dma(ch->hand,&riob,0);
    }
    return 0;
 }
@@ -269,7 +269,7 @@ struct vmeio_riob_s riob;
       riob.bsize  = maxsz;
       riob.buffer = buf;
 
-      return DMA(ch->hand,&riob,1);
+      return cvora_dma(ch->hand,&riob,1);
    }
    return 0;
 }
@@ -290,7 +290,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
    if (ch) {
 
       cmd = ch->cmd | CVA_CMD_SOFT_START;
-      return WRITE_REG(ch->hand,CVA_REG_WO_CONTROL,&cmd);
+      return cvora_write_reg(ch->hand,CVA_REG_WO_CONTROL,&cmd);
    }
    return 0;
 }
@@ -311,7 +311,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
    if (ch) {
 
       cmd = ch->cmd | CVA_CMD_SOFT_STOP;
-      return WRITE_REG(ch->hand,CVA_REG_WO_CONTROL,&cmd);
+      return cvora_write_reg(ch->hand,CVA_REG_WO_CONTROL,&cmd);
    }
    return 0;
 }
@@ -330,7 +330,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if (ch) {
-      return READ_REG(ch->hand,CVA_REG_RO_DAC,dacv);
+      return cvora_read_reg(ch->hand,CVA_REG_RO_DAC,dacv);
    }
    return 0;
 }
@@ -349,7 +349,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if (ch) {
-      return READ_REG(ch->hand,CVA_REG_RO_FREQ,freq);
+      return cvora_read_reg(ch->hand,CVA_REG_RO_FREQ,freq);
    }
    return 0;
 }
@@ -368,7 +368,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if (ch) {
-      return WRITE_REG(ch->hand,CVA_REG_WO_PLOT,plti);
+      return cvora_write_reg(ch->hand,CVA_REG_WO_PLOT,plti);
    }
    return 0;
 }
@@ -387,7 +387,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if (ch) {
-      return READ_REG(ch->hand,CVA_REG_RO_CHANNELS,chans);
+      return cvora_read_reg(ch->hand,CVA_REG_RO_CHANNELS,chans);
    }
    return 0;
 }
@@ -406,7 +406,7 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
    ch = (struct cvora_handle_s *) handle;
    if (ch) {
-      return WRITE_REG(ch->hand,CVA_REG_RO_CHANNELS,chans);
+      return cvora_write_reg(ch->hand,CVA_REG_RO_CHANNELS,chans);
    }
    return 0;
 }

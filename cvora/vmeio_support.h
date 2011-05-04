@@ -18,37 +18,17 @@ extern "C"
 /*
  * This file defines the driver instance DRV_NAME and DRV_SYMB macros
  */
-
-#include "user_driver_parameters.h"
 #include "vmeio.h"
 
 /*
  * Define library entry points as a function of the driver name
  */
 
-#define OPEN         DRV_SYMB(_open)
-#define OPEN_NAME    DRV_SYMB(_open_name)
-#define CLOSE        DRV_SYMB(_close)
-#define GET_WINDOW   DRV_SYMB(_get_window)
-#define RAW          DRV_SYMB(_raw)
-#define DMA          DRV_SYMB(_dma)
-#define WAIT         DRV_SYMB(_wait)
-#define SET_PARAMS   DRV_SYMB(_set_params)
-#define READ_REG     DRV_SYMB(_read_reg)
-#define WRITE_REG    DRV_SYMB(_write_reg)
 
-#define SET_DEBUG    DRV_SYMB(_set_debug)
-#define GET_DEBUG    DRV_SYMB(_get_debug)
 
-#define DO_INTERRUPT DRV_SYMB(_do_interrupt)
 
-#define SET_TIMEOUT  DRV_SYMB(_set_timeout)
-#define GET_TIMEOUT  DRV_SYMB(_get_timeout)
 
-#define GET_VERSION  DRV_SYMB(_get_version)
 
-#define SET_OFFSET   DRV_SYMB(_set_offset)
-#define GET_OFFSET   DRV_SYMB(_get_offset)
 
 /*
  * ============================================
@@ -61,7 +41,7 @@ extern "C"
  * @return handle pointer or null if error
  */
 
-void *OPEN(int lun);
+void *cvora_open(int lun);
 
 /**
  * @brief open a handle for a given lun
@@ -70,14 +50,14 @@ void *OPEN(int lun);
  * @return handle pointer or null if error
  */
 
-void *OPEN_NAME(int lun, char *name);
+void *cvora_open_name(int lun, char *name);
 
 /**
  * @brief close a handle
  * @param handle returned from open
  */
 
-void CLOSE(void *handle);
+void cvora_close(void *handle);
 
 /**
  * ============================================
@@ -87,7 +67,7 @@ void CLOSE(void *handle);
  * @return 1 = OK 0 = FAIL
  */
 
-int GET_VERSION(void *handle, struct vmeio_version_s *ver);
+int cvora_get_version(void *handle, struct vmeio_version_s *ver);
 
 /**
  * ============================================
@@ -97,7 +77,7 @@ int GET_VERSION(void *handle, struct vmeio_version_s *ver);
  * @return 1 = OK 0 = FAIL
  */
 
-int SET_TIMEOUT(void *handle, int *timeout);
+int cvora_set_timeout(void *handle, int *timeout);
 
 /**
  * @brief Set driver debug level
@@ -106,7 +86,7 @@ int SET_TIMEOUT(void *handle, int *timeout);
  * @return 1 = OK 0 = FAIL
  */
 
-int SET_DEBUG(void *handle, int *level);
+int cvora_set_debug(void *handle, int *level);
 
 /**
  * @brief Get driver timeout in milliseconds
@@ -115,7 +95,7 @@ int SET_DEBUG(void *handle, int *level);
  * @return 1 = OK 0 = FAIL
  */
 
-int GET_TIMEOUT(void *handle, int *timeout);
+int cvora_get_timeout(void *handle, int *timeout);
 
 /**
  * @brief Get driver debug level
@@ -124,7 +104,7 @@ int GET_TIMEOUT(void *handle, int *timeout);
  * @return 1 = OK 0 = FAIL
  */
 
-int GET_DEBUG(void *handle, int *level);
+int cvora_get_debug(void *handle, int *level);
 
 /**
  * @brief make an interrupt now
@@ -133,7 +113,7 @@ int GET_DEBUG(void *handle, int *level);
  * @return 1 = OK 0 = FAIL
  */
 
-int DO_INTERRUPT(void *handle, int *mask);
+int cvora_do_interrupt(void *handle, int *mask);
 
 /**
  * ============================================
@@ -143,7 +123,7 @@ int DO_INTERRUPT(void *handle, int *mask);
  * @return 1 = OK 0 = FAIL
  */
 
-int GET_WINDOW(void *handle, struct vmeio_get_window_s *win);
+int cvora_get_window(void *handle, struct vmeio_get_window_s *win);
 
 /**
  * ============================================
@@ -154,17 +134,17 @@ int GET_WINDOW(void *handle, struct vmeio_get_window_s *win);
  * @return 1 = OK 0 = FAIL
  */
 
-int RAW(void *handle, struct vmeio_riob_s *buf, int flag);
+int cvora_raw(void *handle, struct vmeio_riob_s *buf, int flag);
 
 /**
- * @brief Transfer data via DMA, WARNING byte swapping is your problem
+ * @brief Transfer data via cvora_dma, WARNING byte swapping is your problem
  * @param handle returned from open
  * @param buf is a structure containing a pointer to your data area
  * @param flag 0=read 1=write
  * @return 1 = OK 0 = FAIL
  */
 
-int DMA(void *handle, struct vmeio_riob_s *buf, int flag);
+int cvora_dma(void *handle, struct vmeio_riob_s *buf, int flag);
 
 /**
  * ============================================
@@ -174,7 +154,7 @@ int DMA(void *handle, struct vmeio_riob_s *buf, int flag);
  * @return 1 = OK 0 = FAIL
  */
 
-int WAIT(void *handle, struct vmeio_read_buf_s *event);
+int cvora_wait(void *handle, struct vmeio_read_buf_s *event);
 
 /*
  * ============================================
@@ -185,12 +165,12 @@ int WAIT(void *handle, struct vmeio_read_buf_s *event);
  * @brief Set default parameter for READ/WRITE REG calls
  * @param handle returned from open
  * @param winnum window number 1..2
- * @param dmaflag 0 use map 1 use DMA
+ * @param dmaflag 0 use map 1 use cvora_dma
  * @param dmaswap 0 not swap 1 swap
  * @return 1 = OK 0 = FAIL
  */
 
-int SET_PARAMS(void *handle, int winnum, int dmaflag, int dmaswap);
+int cvora_set_params(void *handle, int winnum, int dmaflag, int dmaswap);
 
 /**
  * @brief read a register
@@ -200,7 +180,7 @@ int SET_PARAMS(void *handle, int winnum, int dmaflag, int dmaswap);
  * @return 1 = OK 0 = FAIL
  */
 
-int READ_REG(void *handle, int reg_num, int *reg_val);
+int cvora_read_reg(void *handle, int reg_num, int *reg_val);
 
 /**
  * @brief write a register
@@ -210,7 +190,7 @@ int READ_REG(void *handle, int reg_num, int *reg_val);
  * @return 1 = OK 0 = FAIL
  */
 
-int WRITE_REG(void *handle, int reg_num, int *reg_val);
+int cvora_write_reg(void *handle, int reg_num, int *reg_val);
 
 /**
  * ============================================
@@ -220,7 +200,7 @@ int WRITE_REG(void *handle, int reg_num, int *reg_val);
  * @return 1 = OK 0 = FAIL
  */
 
-int SET_OFFSET(void *handle, int *offset);
+int cvora_set_offset(void *handle, int *offset);
 
 /**
  * @brief Get global block offset
@@ -229,7 +209,7 @@ int SET_OFFSET(void *handle, int *offset);
  * @return 1 = OK 0 = FAIL
  */
 
-int GET_OFFSET(void *handle, int *offset);
+int cvora_get_offset(void *handle, int *offset);
 
 #ifdef __cplusplus
 }
