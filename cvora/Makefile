@@ -28,8 +28,6 @@ COMPILE_TIME:=$(shell date +%s)
 
 CFLAGS= -DCOMPILE_TIME=$(COMPILE_TIME) -g -Wall -fPIC
 
-SRCS=vmeio_support.c vmeio_support.h
-
 libs: vmeio_support.$(CPU).so vmeio_support.$(CPU).a libcvora.$(CPU).a
 
 vmeio_support.$(CPU).o: vmeio_support.c
