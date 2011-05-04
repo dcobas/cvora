@@ -1,0 +1,17 @@
+
+#!/bin/sh
+echo Generated automatically by geninstall.awk at:2011 Mon February-28 15:53:23
+echo Installing CVORA32S driver...
+echo 8 > /proc/sys/kernel/printk
+
+/sbin/insmod cvora32s.ko dname="cvora32s" luns=0 vme1=0x800000 win1=0x80000 amd1=0x39 dwd1=4
+MAJOR=`cat /proc/devices | awk '{if ($2 == "cvora32s") printf $1}'`
+echo Making nodes for ${MODULE} major device cvora32s ${MAJOR}
+if [ -z "$MAJOR" ]; then
+     echo "driver CVORA32S not installed !"
+     exit 2
+fi
+
+rm -f /dev/cvora32s.*
+/bin/mknod  -m 0666 /dev/cvora32s.0 c ${MAJOR} 0
+

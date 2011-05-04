@@ -1,0 +1,40 @@
+
+#This makefile was generated automatically by genmake.awk at:2011 Thu February-24 14:30:45
+
+LIBNAME = libcvora
+REGFILE = CVORA.regs
+
+CPU=L865
+
+include /ps/dsc/src/co/Make.auto
+
+CFLAGS= -g -Wall -I. -I../../driver -I/acc/src/dsc/drivers/cohtdrep/lewis/vmeio-drivers/vmeio/include
+
+SRCS=$(LIBNAME).c $(LIBNAME).h $(REGFILE)
+
+all: $(LIBNAME).$(CPU).a $(LIBNAME).$(CPU).so
+
+$(LIBNAME).$(CPU).o: $(SRCS)
+
+$(LIBNAME).h: $(REGFILE) genlib.h.awk
+	cat $(REGFILE) | ./genlib.h.awk > $(LIBNAME).h
+
+$(LIBNAME).c: $(REGFILE) genlib.c.awk
+	cat $(REGFILE) | ./genlib.c.awk > $(LIBNAME).c
+
+$(LIBNAME).$(CPU).a: $(LIBNAME).$(CPU).o
+	-$(RM) $@
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
+
+$(LIBNAME).$(CPU).so: $(LIBNAME).$(CPU).o
+	-$(RM) $@
+	$(CC) $(CFLAGS) -o $@ -shared $^
+
+clean:
+	rm -f $(LIBNAME).$(CPU).o
+	rm -f $(LIBNAME).$(CPU).a
+	rm -f $(LIBNAME).$(CPU).so
+	rm -f $(LIBNAME).h
+	rm -f $(LIBNAME).c
+
