@@ -20,6 +20,15 @@ extern "C"
  */
 #include "vmeio.h"
 
+struct vmeio_handle {
+   int                       file;      /** File number */
+   int                       winum;     /** Window 1..2 */
+   int                       dmaflag;   /** Use DMA flag 0..1 */
+   int                       dmaswap;   /** Swap after DMA flag 0..1 */
+   int                       offset;    /** Block offset added to all addresses */
+   struct vmeio_get_window_s window;
+ };
+
 /*
  * ============================================
  * Basic routines calling driver
@@ -31,7 +40,7 @@ extern "C"
  * @return handle pointer or null if error
  */
 
-void *cvora_open(int lun);
+struct vmeio_handle *cvora_open(int lun);
 
 /**
  * @brief open a handle for a given lun
@@ -40,14 +49,14 @@ void *cvora_open(int lun);
  * @return handle pointer or null if error
  */
 
-void *cvora_open_name(int lun, char *name);
+struct vmeio_handle *cvora_open_name(int lun, char *name);
 
 /**
  * @brief close a handle
  * @param handle returned from open
  */
 
-void cvora_close(void *handle);
+void cvora_close(struct vmeio_handle *h);
 
 /**
  * ============================================
@@ -57,7 +66,7 @@ void cvora_close(void *handle);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_version(void *handle, struct vmeio_version_s *ver);
+int cvora_get_version(struct vmeio_handle *h, struct vmeio_version_s *ver);
 
 /**
  * ============================================
@@ -67,7 +76,7 @@ int cvora_get_version(void *handle, struct vmeio_version_s *ver);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_set_timeout(void *handle, int *timeout);
+int cvora_set_timeout(struct vmeio_handle *h, int *timeout);
 
 /**
  * @brief Set driver debug level
@@ -76,7 +85,7 @@ int cvora_set_timeout(void *handle, int *timeout);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_set_debug(void *handle, int *level);
+int cvora_set_debug(struct vmeio_handle *h, int *level);
 
 /**
  * @brief Get driver timeout in milliseconds
@@ -85,7 +94,7 @@ int cvora_set_debug(void *handle, int *level);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_timeout(void *handle, int *timeout);
+int cvora_get_timeout(struct vmeio_handle *h, int *timeout);
 
 /**
  * @brief Get driver debug level
@@ -94,7 +103,7 @@ int cvora_get_timeout(void *handle, int *timeout);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_debug(void *handle, int *level);
+int cvora_get_debug(struct vmeio_handle *h, int *level);
 
 /**
  * @brief make an interrupt now
@@ -103,7 +112,7 @@ int cvora_get_debug(void *handle, int *level);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_do_interrupt(void *handle, int *mask);
+int cvora_do_interrupt(struct vmeio_handle *h, int *mask);
 
 /**
  * ============================================
@@ -113,7 +122,7 @@ int cvora_do_interrupt(void *handle, int *mask);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_window(void *handle, struct vmeio_get_window_s *win);
+int cvora_get_window(struct vmeio_handle *h, struct vmeio_get_window_s *win);
 
 /**
  * ============================================
@@ -124,7 +133,7 @@ int cvora_get_window(void *handle, struct vmeio_get_window_s *win);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_raw(void *handle, struct vmeio_riob_s *buf, int flag);
+int cvora_raw(struct vmeio_handle *h, struct vmeio_riob_s *buf, int flag);
 
 /**
  * @brief Transfer data via cvora_dma, WARNING byte swapping is your problem
@@ -134,7 +143,7 @@ int cvora_raw(void *handle, struct vmeio_riob_s *buf, int flag);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_dma(void *handle, struct vmeio_riob_s *buf, int flag);
+int cvora_dma(struct vmeio_handle *h, struct vmeio_riob_s *buf, int flag);
 
 /**
  * ============================================
@@ -144,7 +153,7 @@ int cvora_dma(void *handle, struct vmeio_riob_s *buf, int flag);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_wait(void *handle, struct vmeio_read_buf_s *event);
+int cvora_wait(struct vmeio_handle *h, struct vmeio_read_buf_s *event);
 
 /*
  * ============================================
@@ -160,7 +169,7 @@ int cvora_wait(void *handle, struct vmeio_read_buf_s *event);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_set_params(void *handle, int winnum, int dmaflag, int dmaswap);
+int cvora_set_params(struct vmeio_handle *h, int winnum, int dmaflag, int dmaswap);
 
 /**
  * @brief read a register
@@ -170,7 +179,7 @@ int cvora_set_params(void *handle, int winnum, int dmaflag, int dmaswap);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_read_reg(void *handle, int reg_num, int *reg_val);
+int cvora_read_reg(struct vmeio_handle *h, int reg_num, int *reg_val);
 
 /**
  * @brief write a register
@@ -180,7 +189,7 @@ int cvora_read_reg(void *handle, int reg_num, int *reg_val);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_write_reg(void *handle, int reg_num, int *reg_val);
+int cvora_write_reg(struct vmeio_handle *h, int reg_num, int *reg_val);
 
 /**
  * ============================================
@@ -190,7 +199,7 @@ int cvora_write_reg(void *handle, int reg_num, int *reg_val);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_set_offset(void *handle, int *offset);
+int cvora_set_offset(struct vmeio_handle *h, int *offset);
 
 /**
  * @brief Get global block offset
@@ -199,7 +208,7 @@ int cvora_set_offset(void *handle, int *offset);
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_offset(void *handle, int *offset);
+int cvora_get_offset(struct vmeio_handle *h, int *offset);
 
 #ifdef __cplusplus
 }

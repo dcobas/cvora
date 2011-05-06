@@ -15,19 +15,6 @@
 #include <errno.h>
 #include "vmeio_support.h"
 
-/**
- * Internal handle structurs used only by the support library
- */
-
-typedef struct {
-   int                       file;      /** File number */
-   int                       winum;     /** Window 1..2 */
-   int                       dmaflag;   /** Use DMA flag 0..1 */
-   int                       dmaswap;   /** Swap after DMA flag 0..1 */
-   int                       offset;    /** Block offset added to all addresses */
-   struct vmeio_get_window_s window;
- } handle_t;
-
 /*
  * ============================================
  * Basic routines calling driver
@@ -46,11 +33,11 @@ typedef struct {
  * @return handle pointer or null if error
  */
 
-void *cvora_open_name(int lun, char *name) {
+struct vmeio_handle *cvora_open_name(int lun, char *name) {
 
 char fname[32];
 int fnum;
-handle_t *h;
+struct vmeio_handle *h;
 
    sprintf(fname,"/dev/%s.%1d",name,lun);
    if ((fnum = open(fname,O_RDWR,0)) <= 0) {
@@ -58,7 +45,7 @@ handle_t *h;
       return NULL;
    }
 
-   h = (handle_t *) malloc(sizeof(handle_t));
+   h = malloc(sizeof(*h));
    if (h == NULL) {
       fprintf(stderr,"Error:%s_open Can't allocate memory\n",DRIVER_NAME);
       close(fnum);
@@ -83,7 +70,7 @@ handle_t *h;
  * @return handle pointer or null if error
  */
 
-void *cvora_open(int lun) {
+struct vmeio_handle *cvora_open(int lun) {
 
    return cvora_open_name(lun,DRIVER_NAME);
 }
@@ -94,14 +81,12 @@ void *cvora_open(int lun) {
  * @param handle returned from open
  */
 
-void cvora_close(void *handle) {
+void cvora_close(struct vmeio_handle *h) {
 
-handle_t *h;
 
-   h = (handle_t *) handle;
    if (h) {
       close(h->file);
-      free(handle);
+      free(h);
    }
 }
 
@@ -113,12 +98,10 @@ handle_t *h;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_version(void *handle, struct vmeio_version_s *ver) {
+int cvora_get_version(struct vmeio_handle *h, struct vmeio_version_s *ver) {
 
-handle_t *h;
 long vd;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
    if (ioctl(h->file,VMEIO_GET_VERSION,&vd) <0) return 0;
    ver->driver  = vd;
@@ -134,12 +117,10 @@ long vd;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_set_timeout(void *handle, int *timeout) {
+int cvora_set_timeout(struct vmeio_handle *h, int *timeout) {
 
-handle_t *h;
 long tmo;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
    tmo = *timeout;
    if (ioctl(h->file,VMEIO_SET_TIMEOUT,&tmo) <0) return 0;
@@ -154,12 +135,10 @@ long tmo;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_set_debug(void *handle, int *level) {
+int cvora_set_debug(struct vmeio_handle *h, int *level) {
 
-handle_t *h;
 long lvl;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
    lvl = *level;
    if (ioctl(h->file,VMEIO_SET_DEBUG,&lvl) <0) return 0;
@@ -174,12 +153,10 @@ long lvl;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_timeout(void *handle, int *timeout) {
+int cvora_get_timeout(struct vmeio_handle *h, int *timeout) {
 
-handle_t *h;
 long tmo;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
    if (ioctl(h->file,VMEIO_GET_TIMEOUT,&tmo) <0) return 0;
    *timeout = (int) tmo;
@@ -194,12 +171,10 @@ long tmo;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_do_interrupt(void *handle, int *mask) {
+int cvora_do_interrupt(struct vmeio_handle *h, int *mask) {
 
-handle_t *h;
 int cc;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
    cc = write(h->file,mask,sizeof(int));
    if (cc < sizeof(int)) return 0;
@@ -214,12 +189,10 @@ int cc;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_debug(void *handle, int *level) {
+int cvora_get_debug(struct vmeio_handle *h, int *level) {
 
-handle_t *h;
 long lvl;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
    if (ioctl(h->file,VMEIO_GET_DEBUG,&lvl) <0) return 0;
    *level = (int) lvl;
@@ -234,11 +207,9 @@ long lvl;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_window(void *handle, struct vmeio_get_window_s *win) {
+int cvora_get_window(struct vmeio_handle *h, struct vmeio_get_window_s *win) {
 
-handle_t *h;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
    if (ioctl(h->file,VMEIO_GET_DEVICE,win) <0) return 0;
    return 1;
@@ -253,12 +224,10 @@ handle_t *h;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_raw(void *handle, struct vmeio_riob_s *buf, int flag) {
+int cvora_raw(struct vmeio_handle *h, struct vmeio_riob_s *buf, int flag) {
 
-handle_t *h;
 struct vmeio_riob_s cb;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
 
    cb.winum  = buf->winum;
@@ -278,7 +247,7 @@ struct vmeio_riob_s cb;
  * ============================================
  */
 
-static void swap_buf(handle_t *h, struct vmeio_riob_s *buf) {
+static void swap_buf(struct vmeio_handle *h, struct vmeio_riob_s *buf) {
 
 int i, dwd;
 char *cp, *bp, c;
@@ -328,12 +297,10 @@ char *cp, *bp, c;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_dma(void *handle, struct vmeio_riob_s *buf, int flag) {
+int cvora_dma(struct vmeio_handle *h, struct vmeio_riob_s *buf, int flag) {
 
-handle_t *h;
 struct vmeio_riob_s cb;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
 
    cb.winum  = buf->winum;
@@ -359,12 +326,10 @@ struct vmeio_riob_s cb;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_wait(void *handle, struct vmeio_read_buf_s *event) {
+int cvora_wait(struct vmeio_handle *h, struct vmeio_read_buf_s *event) {
 
-handle_t *h;
 int cc;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
 
    cc = read(h->file,event,sizeof(struct vmeio_read_buf_s));
@@ -391,11 +356,9 @@ int cc;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_set_params(void *handle, int winum, int dmaflag, int dmaswap) {
+int cvora_set_params(struct vmeio_handle *h, int winum, int dmaflag, int dmaswap) {
 
-handle_t *h;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
 
    h->winum   = winum;
@@ -414,16 +377,14 @@ handle_t *h;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_read_reg(void *handle, int reg_num, int *reg_val) {
+int cvora_read_reg(struct vmeio_handle *h, int reg_num, int *reg_val) {
 
-handle_t *h;
 struct vmeio_riob_s buf;
 
 int cc;
 long value = 0;
 int dwd;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
 
    if (h->winum == 2) dwd = h->window.dwd2;
@@ -434,8 +395,8 @@ int dwd;
    buf.bsize  = dwd;
    buf.buffer = &value;
 
-   if (h->dmaflag) cc = cvora_dma(handle,&buf,0);
-   else            cc = cvora_raw(handle,&buf,0);
+   if (h->dmaflag) cc = cvora_dma(h,&buf,0);
+   else            cc = cvora_raw(h,&buf,0);
 
    *reg_val = value;
    return cc;
@@ -450,16 +411,14 @@ int dwd;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_write_reg(void *handle, int reg_num, int *reg_val) {
+int cvora_write_reg(struct vmeio_handle *h, int reg_num, int *reg_val) {
 
-handle_t *h;
 struct vmeio_riob_s buf;
 
 int cc;
 long value = 0;
 int dwd;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
 
    value = *reg_val;
@@ -472,8 +431,8 @@ int dwd;
    buf.bsize  = dwd;
    buf.buffer = &value;
 
-   if (h->dmaflag) cc = cvora_dma(handle,&buf,1);
-   else            cc = cvora_raw(handle,&buf,1);
+   if (h->dmaflag) cc = cvora_dma(h,&buf,1);
+   else            cc = cvora_raw(h,&buf,1);
 
    return cc;
 }
@@ -493,11 +452,9 @@ int dwd;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_set_offset(void *handle, int *offset) {
+int cvora_set_offset(struct vmeio_handle *h, int *offset) {
 
-handle_t *h;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
 
    h->offset = *offset;
@@ -511,11 +468,9 @@ handle_t *h;
  * @return 1 = OK 0 = FAIL
  */
 
-int cvora_get_offset(void *handle, int *offset) {
+int cvora_get_offset(struct vmeio_handle *h, int *offset) {
 
-handle_t *h;
 
-   h = (handle_t *) handle;
    if (!h) return 0;
    *offset = h->offset;
    return 1;
