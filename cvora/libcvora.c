@@ -29,7 +29,7 @@
  * Private data structure for library handle
  */
 
-struct cvora_handle_s {
+struct cvora_handle {
    void *hand;                    /* Support library handle */
    struct vmeio_get_window_s win; /* Address windows descriptor */
    int cmd;                       /* Command register */
@@ -49,17 +49,17 @@ struct cvora_handle_s {
  * @return pointer to handle or null on error, see errno
  */
 
-void *cvora_init(int lun) {
+struct cvora_handle *cvora_init(int lun) {
 
 void *sh = NULL;           /* Support library handle */
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 struct vmeio_get_window_s win;
 int cc;
 
    sh = cvora_open(lun);
    if (!sh) return NULL;
 
-   ch = (struct cvora_handle_s *) malloc(sizeof(struct cvora_handle_s));
+   ch = malloc(sizeof(struct cvora_handle));
    if (!ch) return NULL;
    ch->hand = sh;
 
@@ -98,9 +98,9 @@ init_err:
 
 int cvora_get_module_id(void *handle, int *modid) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       *modid = ch->modid;
       return 1;
@@ -118,9 +118,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
 int cvora_get_mode(void *handle, int *mode) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       *mode = ch->mode;
       return 1;
@@ -139,9 +139,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 int cvora_set_mode(void *handle, int *mode) {
 
 int cc;
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if ((ch) && (*mode>=CVA_MDES_FIRST) && (*mode <=CVA_MDES_LAST)) {
       cc = cvora_write_reg(ch->hand,CVA_REG_WO_MODE,mode);
       if (!cc) return 0;
@@ -161,9 +161,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
 int cvora_get_hardware_status(void *handle, int *status) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       return cvora_read_reg(ch->hand,CVA_REG_RO_STATUS,status);
    }
@@ -181,9 +181,9 @@ int cvora_wait2(void *handle) {
 
 int cc;
 struct vmeio_read_buf_s event;
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       cc = cvora_wait(ch->hand,&event);
       if (cc <= 0) return 0;
@@ -203,9 +203,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 int cvora_get_sample_size(void *handle, int *memsz) {
 
 int cc, memp;              /* Memory pointer */
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       cc = cvora_read_reg(ch->hand,CVA_REG_RW_MEM_POINTER,&memp);
       if ((cc) && (memp >= CVA_MEM_MIN) && (memp <= CVA_MEM_MAX)) {
@@ -228,10 +228,10 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
 int cvora_read_samples(void *handle, int maxsz, int *actsz, int *buf) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 struct vmeio_riob_s riob;
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       if (!cvora_get_sample_size(handle,actsz)) return 0;
 
@@ -258,10 +258,10 @@ struct vmeio_riob_s riob;
 
 int cvora_write_samples(void *handle, int maxsz, int *buf) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 struct vmeio_riob_s riob;
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
 
       riob.winum  = 1;
@@ -284,9 +284,9 @@ struct vmeio_riob_s riob;
 int cvora_soft_start(void *handle) {
 
 int cmd;
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
 
       cmd = ch->cmd | CVA_CMD_SOFT_START;
@@ -305,9 +305,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 int cvora_soft_stop(void *handle) {
 
 int cmd;
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
 
       cmd = ch->cmd | CVA_CMD_SOFT_STOP;
@@ -326,9 +326,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
 int cvora_get_dac(void *handle, int *dacv) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       return cvora_read_reg(ch->hand,CVA_REG_RO_DAC,dacv);
    }
@@ -345,9 +345,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
 int cvora_get_clock_frequency(void *handle, int *freq) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       return cvora_read_reg(ch->hand,CVA_REG_RO_FREQ,freq);
    }
@@ -364,9 +364,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
 int cvora_set_plot_input(void *handle, int *plti) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       return cvora_write_reg(ch->hand,CVA_REG_WO_PLOT,plti);
    }
@@ -383,9 +383,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
 int cvora_get_channels_mask(void *handle, int *chans) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       return cvora_read_reg(ch->hand,CVA_REG_RO_CHANNELS,chans);
    }
@@ -402,9 +402,9 @@ struct cvora_handle_s *ch; /* Cvora library handle */
 
 int cvora_set_channels_mask(void *handle, int *chans) {
 
-struct cvora_handle_s *ch; /* Cvora library handle */
+struct cvora_handle *ch; /* Cvora library handle */
 
-   ch = (struct cvora_handle_s *) handle;
+   ch = (struct cvora_handle *) handle;
    if (ch) {
       return cvora_write_reg(ch->hand,CVA_REG_RO_CHANNELS,chans);
    }

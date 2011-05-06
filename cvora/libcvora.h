@@ -66,7 +66,7 @@ extern "C"
  * @return pointer to handle or null on error, see errno
  */
 
-void *cvora_init(int lun);
+struct cvora_handle *cvora_init(int lun);
 
 /**
  * ===================
