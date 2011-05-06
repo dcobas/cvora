@@ -58,9 +58,9 @@ struct vmeio_handle *h;
    h->dmaflag = 0;
    h->offset = 0;
 
-   cvora_get_window((void *) h, &h->window);
+   cvora_get_window(h, &h->window);
 
-   return (void *) h;
+   return h;
 }
 
 /**
