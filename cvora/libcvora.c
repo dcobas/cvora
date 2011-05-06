@@ -99,8 +99,6 @@ init_err:
 
 int cvora_get_module_id(struct cvora_handle *ch, int *modid)
 {
-
-
    if (ch) {
       *modid = ch->modid;
       return 1;
@@ -118,8 +116,6 @@ int cvora_get_module_id(struct cvora_handle *ch, int *modid)
 
 int cvora_get_mode(struct cvora_handle *ch, int *mode)
 {
-
-
    if (ch) {
       *mode = ch->mode;
       return 1;
@@ -137,8 +133,7 @@ int cvora_get_mode(struct cvora_handle *ch, int *mode)
 
 int cvora_set_mode(struct cvora_handle *ch, int *mode)
 {
-
-int cc;
+   int cc;
 
    if ((ch) && (*mode>=CVA_MDES_FIRST) && (*mode <=CVA_MDES_LAST)) {
       cc = cvora_write_reg(ch->hand,CVA_REG_WO_MODE,mode);
@@ -159,8 +154,6 @@ int cc;
 
 int cvora_get_hardware_status(struct cvora_handle *ch, int *status)
 {
-
-
    if (ch) {
       return cvora_read_reg(ch->hand,CVA_REG_RO_STATUS,status);
    }
@@ -176,9 +169,8 @@ int cvora_get_hardware_status(struct cvora_handle *ch, int *status)
 
 int cvora_wait2(struct cvora_handle *ch)
 {
-
-int cc;
-struct vmeio_read_buf_s event;
+   int cc;
+   struct vmeio_read_buf_s event;
 
    if (ch) {
       cc = cvora_wait(ch->hand,&event);
@@ -198,8 +190,7 @@ struct vmeio_read_buf_s event;
 
 int cvora_get_sample_size(struct cvora_handle *ch, int *memsz)
 {
-
-int cc, memp;              /* Memory pointer */
+   int cc, memp;              /* Memory pointer */
 
    if (ch) {
       cc = cvora_read_reg(ch->hand,CVA_REG_RW_MEM_POINTER,&memp);
@@ -223,8 +214,7 @@ int cc, memp;              /* Memory pointer */
 
 int cvora_read_samples(struct cvora_handle *ch, int maxsz, int *actsz, int *buf)
 {
-
-struct vmeio_riob_s riob;
+    struct vmeio_riob_s riob;
 
    if (ch) {
       if (!cvora_get_sample_size(ch,actsz)) return 0;
@@ -252,8 +242,7 @@ struct vmeio_riob_s riob;
 
 int cvora_write_samples(struct cvora_handle *ch, int maxsz, int *buf)
 {
-
-struct vmeio_riob_s riob;
+   struct vmeio_riob_s riob;
 
    if (ch) {
 
@@ -276,8 +265,7 @@ struct vmeio_riob_s riob;
 
 int cvora_soft_start(struct cvora_handle *ch)
 {
-
-int cmd;
+   int cmd;
 
    if (ch) {
 
@@ -296,8 +284,7 @@ int cmd;
 
 int cvora_soft_stop(struct cvora_handle *ch)
 {
-
-int cmd;
+   int cmd;
 
    if (ch) {
 
@@ -317,8 +304,6 @@ int cmd;
 
 int cvora_get_dac(struct cvora_handle *ch, int *dacv)
 {
-
-
    if (ch) {
       return cvora_read_reg(ch->hand,CVA_REG_RO_DAC,dacv);
    }
@@ -335,8 +320,6 @@ int cvora_get_dac(struct cvora_handle *ch, int *dacv)
 
 int cvora_get_clock_frequency(struct cvora_handle *ch, int *freq)
 {
-
-
    if (ch) {
       return cvora_read_reg(ch->hand,CVA_REG_RO_FREQ,freq);
    }
@@ -353,8 +336,6 @@ int cvora_get_clock_frequency(struct cvora_handle *ch, int *freq)
 
 int cvora_set_plot_input(struct cvora_handle *ch, int *plti)
 {
-
-
    if (ch) {
       return cvora_write_reg(ch->hand,CVA_REG_WO_PLOT,plti);
    }
@@ -371,8 +352,6 @@ int cvora_set_plot_input(struct cvora_handle *ch, int *plti)
 
 int cvora_get_channels_mask(struct cvora_handle *ch, int *chans)
 {
-
-
    if (ch) {
       return cvora_read_reg(ch->hand,CVA_REG_RO_CHANNELS,chans);
    }
@@ -389,8 +368,6 @@ int cvora_get_channels_mask(struct cvora_handle *ch, int *chans)
 
 int cvora_set_channels_mask(struct cvora_handle *ch, int *chans)
 {
-
-
    if (ch) {
       return cvora_write_reg(ch->hand,CVA_REG_RO_CHANNELS,chans);
    }
