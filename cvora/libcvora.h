@@ -28,20 +28,20 @@ extern "C"
  * the following interface is implemented by support...
  *
  *  \par void *cvora_open(int lun);
- *  \par void  cvora_close(void *handle);
- *  \par int   cvora_get_window(void *handle, struct vmeio_get_window_s *win);
- *  \par int   cvora_raw(void *handle, struct vmeio_riob_s *buf, int flag);
- *  \par int   cvora_dma(void *handle, struct vmeio_riob_s *buf, int flag);
- *  \par int   cvora_wait(void *handle, struct vmeio_read_buf_s *event);
- *  \par int   cvora_set_params(void *handle, int winnum, int dmaflag);
- *  \par int   cvora_read_reg(void *handle, int reg_num, int *reg_val);
- *  \par int   cvora_write_reg(void *handle, int reg_num, int *reg_val);
- *  \par int   cvora_set_debug(void *handle, int *level);
- *  \par int   cvora_get_debug(void *handle, int *level);
- *  \par int   cvora_set_timeout(void *handle, int *milliseconds);
- *  \par int   cvora_get_timeout(void *handle, int *milliseconds);
- *  \par int   cvora_do_interrupt(void *handle, int *mask);
- *  \par int   cvora_get_version(void *handle, struct vmeio_version_s *ver);
+ *  \par void  cvora_close(struct cvora_handle *handle);
+ *  \par int   cvora_get_window(struct cvora_handle *handle, struct vmeio_get_window_s *win);
+ *  \par int   cvora_raw(struct cvora_handle *handle, struct vmeio_riob_s *buf, int flag);
+ *  \par int   cvora_dma(struct cvora_handle *handle, struct vmeio_riob_s *buf, int flag);
+ *  \par int   cvora_wait(struct cvora_handle *handle, struct vmeio_read_buf_s *event);
+ *  \par int   cvora_set_params(struct cvora_handle *handle, int winnum, int dmaflag);
+ *  \par int   cvora_read_reg(struct cvora_handle *handle, int reg_num, int *reg_val);
+ *  \par int   cvora_write_reg(struct cvora_handle *handle, int reg_num, int *reg_val);
+ *  \par int   cvora_set_debug(struct cvora_handle *handle, int *level);
+ *  \par int   cvora_get_debug(struct cvora_handle *handle, int *level);
+ *  \par int   cvora_set_timeout(struct cvora_handle *handle, int *milliseconds);
+ *  \par int   cvora_get_timeout(struct cvora_handle *handle, int *milliseconds);
+ *  \par int   cvora_do_interrupt(struct cvora_handle *handle, int *mask);
+ *  \par int   cvora_get_version(struct cvora_handle *handle, struct vmeio_version_s *ver);
  *  \par
  * These routines can also be called through the DRV_SYMB macro. In this
  * case the names systemattically become the capitalized string with the
@@ -76,7 +76,7 @@ struct cvora_handle *cvora_init(int lun);
  * @return 1=OK 0=Error
  */
 
-int cvora_get_module_id(void *handle, int *modid);
+int cvora_get_module_id(struct cvora_handle *handle, int *modid);
 
 /**
  * ===================
@@ -86,7 +86,7 @@ int cvora_get_module_id(void *handle, int *modid);
  * @return 1=OK 0=Error
  */
 
-int cvora_get_mode(void *handle, int *mode);
+int cvora_get_mode(struct cvora_handle *handle, int *mode);
 
 /**
  * ===================
@@ -96,7 +96,7 @@ int cvora_get_mode(void *handle, int *mode);
  * @return 1=OK 0=Error
  */
 
-int cvora_set_mode(void *handle, int *mode);
+int cvora_set_mode(struct cvora_handle *handle, int *mode);
 
 /**
  * ===================
@@ -106,7 +106,7 @@ int cvora_set_mode(void *handle, int *mode);
  * @return 1=OK 0=Error
  */
 
-int cvora_get_hardware_status(void *handle, int *status);
+int cvora_get_hardware_status(struct cvora_handle *handle, int *status);
 
 /**
  * ===================
@@ -115,7 +115,7 @@ int cvora_get_hardware_status(void *handle, int *status);
  * @return 1=OK 0=Error
  */
 
-int cvora_wait2(void *handle);
+int cvora_wait2(struct cvora_handle *handle);
 
 /**
  * ===================
@@ -125,7 +125,7 @@ int cvora_wait2(void *handle);
  * @return 1=OK 0=Error
  */
 
-int cvora_get_sample_size(void *handle, int *memsz);
+int cvora_get_sample_size(struct cvora_handle *handle, int *memsz);
 
 /**
  * ===================
@@ -137,7 +137,7 @@ int cvora_get_sample_size(void *handle, int *memsz);
  * @return 1=OK 0=Error
  */
 
-int cvora_read_samples(void *handle, int maxsz, int *actsz, int *buf);
+int cvora_read_samples(struct cvora_handle *handle, int maxsz, int *actsz, int *buf);
 
 /**
  * ===================
@@ -146,7 +146,7 @@ int cvora_read_samples(void *handle, int maxsz, int *actsz, int *buf);
  * @return 1=OK 0=Error
  */
 
-int cvora_soft_start(void *handle);
+int cvora_soft_start(struct cvora_handle *handle);
 
 /**
  * ===================
@@ -155,7 +155,7 @@ int cvora_soft_start(void *handle);
  * @return 1=OK 0=Error
  */
 
-int cvora_soft_stop(void *handle);
+int cvora_soft_stop(struct cvora_handle *handle);
 
 /**
  * ===================
@@ -165,7 +165,7 @@ int cvora_soft_stop(void *handle);
  * @return 1=OK 0=Error
  */
 
-int cvora_get_dac(void *handle, int *dacv);
+int cvora_get_dac(struct cvora_handle *handle, int *dacv);
 
 /**
  * ===================
@@ -175,7 +175,7 @@ int cvora_get_dac(void *handle, int *dacv);
  * @return 1=OK 0=Error
  */
 
-int cvora_get_clock_frequency(void *handle, int *freq);
+int cvora_get_clock_frequency(struct cvora_handle *handle, int *freq);
 
 /**
  * ===================
@@ -185,7 +185,7 @@ int cvora_get_clock_frequency(void *handle, int *freq);
  * @return 1=OK 0=Error
  */
 
-int cvora_set_plot_input(void *handle, int *plti);
+int cvora_set_plot_input(struct cvora_handle *handle, int *plti);
 
 /**
  * ===================
@@ -195,7 +195,7 @@ int cvora_set_plot_input(void *handle, int *plti);
  * @return 1=OK 0=Error
  */
 
-int cvora_get_channels_mask(void *handle, int *chans);
+int cvora_get_channels_mask(struct cvora_handle *handle, int *chans);
 
 /**
  * ===================
@@ -205,7 +205,7 @@ int cvora_get_channels_mask(void *handle, int *chans);
  * @return 1=OK 0=Error
  */
 
-int cvora_set_channels_mask(void *handle, int *chans);
+int cvora_set_channels_mask(struct cvora_handle *handle, int *chans);
 
 #ifdef __cplusplus
 }
