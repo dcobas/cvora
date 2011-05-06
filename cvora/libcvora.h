@@ -51,13 +51,24 @@ extern "C"
  * one module.
  */
 
-#include "cvora_hard.h"
-
 /**
  * Hardware definitions for registers defined in cvora_hard.h
  * This file defines the CVORA register names and their offsets in the addressmap
  * Where a register is composed of bit fields the bit names are defined
  */
+#include "cvora_hard.h"
+
+/**
+ * Private data structure for library handle
+ */
+
+struct cvora_handle {
+   void *hand;                    /* Support library handle */
+   struct vmeio_get_window_s win; /* Address windows descriptor */
+   int cmd;                       /* Command register */
+   int mode;                      /* Mode register */
+   int modid;                     /* Module ID */
+ };
 
 /**
  * ===================
