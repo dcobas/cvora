@@ -28,24 +28,11 @@ COMPILE_TIME:=$(shell date +%s)
 
 CFLAGS= -DCOMPILE_TIME=$(COMPILE_TIME) -g -Wall -fPIC
 
-libs: vmeio_support.$(CPU).so vmeio_support.$(CPU).a libcvora.$(CPU).a
-
-vmeio_support.$(CPU).o: vmeio_support.c
-vmeio_support.$(CPU).a: vmeio_support.$(CPU).o
-	-$(RM) $@
-	$(AR) $(ARFLAGS) $@ $^
-	$(RANLIB) $@
+libs: libcvora.$(CPU).a
 
 libcvora.$(CPU).o: libcvora.c libcvora.h cvora_hard.h
 libcvora.$(CPU).a: libcvora.$(CPU).o
 	-$(RM) $@
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
-
-vmeio_support.$(CPU).so: vmeio_support.$(CPU).o
-	-$(RM) $@
-	$(CC) $(CFLAGS) -o $@ -shared $^
-
-test: vmeio_support.$(CPU).a
-	make -C test
 

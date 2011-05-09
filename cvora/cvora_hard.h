@@ -8,6 +8,54 @@
 #ifndef CVORA_HARD
 #define CVORA_HARD
 
+/** register offsets */
+#define CVORA_CONTROL		0x0
+#define CVORA_MEMORY_POINTER	0x4
+#define CVORA_MODE		0x8
+#define CVORA_CHANNEL		0xc
+#define CVORA_FREQUENCY		0x10
+#define	CVORA_DAC		0x14
+#define	CVORA_MEMORY		0x20
+
+/** positions and masks within control register */
+#define CVORA_POLARITY_BIT	0
+#define CVORA_POLARITY_MASK	1
+#define CVORA_MODULE_ENABLE_BIT	1
+#define CVORA_INT_ENABLE_BIT	2
+#define CVORA_SOFT_START_BIT	3
+#define CVORA_SOFT_STOP_BIT	4
+#define CVORA_SOFT_REARM_BIT	5
+#define CVORA_COUNTER_OVERFLOW	6
+#define CVORA_RAM_OVERFLOW	7
+#define CVORA_VECTOR_BIT	8
+#define CVORA_VECTOR_MASK	(0xff << CVORA_VECTOR_BIT)
+#define CVORA_VERSION_BIT	16
+#define CVORA_VERSION_MASK	(0xffff << CVORA_VERSION_BIT)
+
+/** positions and masks withing mode register */
+#define CVORA_MODE_BIT		0
+#define CVORA_MODE_MASK		0x7
+
+/** memory boundaries */
+#define CVORA_MEM_MIN  0x20
+#define CVORA_MEM_MAX  0x7FFFC
+#define CVORA_MEM_SIZE (CVORA_MEM_MAX-CVORA_MEM_MIN)
+
+/** polarity bit */
+#define	POSITIVE	1
+#define	NEGATIVE	0
+
+enum cvora_mode {
+	cvora_reserved,		/** reserved but parallel input for the moment */
+	cvora_optical_16,       /** one optical input 16 bits - Input 2 is ignored */
+	cvora_copper_16,        /** one copper Input 16 bits */
+	cvora_btrain_counter,   /** Btrain counters */
+	cvora_parallel_input,   /** parallel input */
+	cvora_optical_2_16,     /** two optical inputs 16 bits */
+	cvora_copper_2_16,      /** two copper Inputs 16 bits */
+	cvora_serial_32,        /** 32 Serial Inputs on rear panel (P2 connector). */
+};
+
 /**
  * Register offset addresses
  * The bytes offsets in the register map
