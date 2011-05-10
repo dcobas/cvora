@@ -12,6 +12,7 @@ extern "C"
 {
 #endif
 
+/** @cond */
 /** register offsets */
 #define CVORA_CONTROL		0x0
 #define CVORA_MEMORY_POINTER	0x4
@@ -48,17 +49,18 @@ extern "C"
 /** polarity bit */
 #define	POSITIVE	1
 #define	NEGATIVE	0
+/** @endcond */
 
 /** cvora modes of operation */
 enum cvora_mode {
-	cvora_reserved,		/** reserved but parallel input for the moment */
-	cvora_optical_16,       /** one optical input 16 bits - Input 2 is ignored */
-	cvora_copper_16,        /** one copper Input 16 bits */
-	cvora_btrain_counter,   /** Btrain counters */
-	cvora_parallel_input,   /** parallel input */
-	cvora_optical_2_16,     /** two optical inputs 16 bits */
-	cvora_copper_2_16,      /** two copper Inputs 16 bits */
-	cvora_serial_32,        /** 32 Serial Inputs on rear panel (P2 connector). */
+	cvora_reserved,		/**< reserved but parallel input for the moment */
+	cvora_optical_16,       /**< one optical input 16 bits - Input 2 is ignored */
+	cvora_copper_16,        /**< one copper Input 16 bits */
+	cvora_btrain_counter,   /**< Btrain counters */
+	cvora_parallel_input,   /**< parallel input */
+	cvora_optical_2_16,     /**< two optical inputs 16 bits */
+	cvora_copper_2_16,      /**< two copper Inputs 16 bits */
+	cvora_serial_32,        /**< 32 Serial Inputs on rear panel (P2 connector). */
 };
 
 /**
