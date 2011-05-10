@@ -110,6 +110,22 @@ int cvora_set_mode(int fd, enum cvora_mode mode);
 int cvora_get_hardware_status(int fd, unsigned int *status);
 
 /**
+ * @brief set interrupt wait timeout
+ * @param fd  file descriptor returned from cvora_init
+ * @param timeout timeout value in milliseconds
+ * @return 0 if OK, < 0 if error
+ */
+int cvora_set_timeout(int fd, int timeout);
+
+/**
+ * @brief get interrupt wait timeout
+ * @param fd  file descriptor returned from cvora_init
+ * @param timeout timeout value in milliseconds
+ * @return 0 if OK, < 0 if error
+ */
+int cvora_get_timeout(int fd, int *timeout);
+
+/**
  * @brief set pulse polarity
  * @param fd  file descriptor returned from cvora_init
  * @param polarity polarity

@@ -167,6 +167,16 @@ int cvora_get_hardware_status(int fd, unsigned int *status)
 	return read_reg(fd, CVORA_CONTROL, status);
 }
 
+int cvora_set_timeout(int fd, int timeout)
+{
+	return ioctl(fd, VMEIO_SET_TIMEOUT, &timeout);
+}
+
+int cvora_get_timeout(int fd, int *timeout)
+{
+	return ioctl(fd, VMEIO_SET_TIMEOUT, timeout);
+}
+
 int cvora_wait(int fd)
 {
 	struct vmeio_read_buf_s event;
