@@ -159,7 +159,7 @@ int cvora_get_mode(int fd, enum cvora_mode *mode)
 
 int cvora_set_mode(int fd, enum cvora_mode mode)
 {
-	if (mode & CVORA_MODE_MASK)
+	if (mode & ~CVORA_MODE_MASK)
 		return -EINVAL;
 	return write_reg(fd, CVORA_MODE, mode);
 }
