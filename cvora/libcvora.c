@@ -24,6 +24,11 @@ int cvora_init(int lun)
 	return fnum;
 }
 
+int cvora_close(int fd)
+{
+	return close(fd);
+}
+
 static int read_reg(int fd, unsigned offset, unsigned *value)
 {
 	struct vmeio_riob_s cb;

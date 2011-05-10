@@ -41,6 +41,14 @@ enum cvora_mode {
 int cvora_init(int lun);
 
 /**
+ * @brief close cvora file handle
+ * @param fd file descriptor
+ * @return 0 if success, < 0 if error
+ */
+
+int cvora_close(int fd);
+
+/**
  * @brief get version of the module
  * @param fd  file descriptor returned from cvora_init
  * @param version	module version
