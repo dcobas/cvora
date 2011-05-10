@@ -83,6 +83,20 @@ class CvoraCmd(cmd.Cmd):
             memory_overflow   and  "Overflown"  or  "OK",
         )
 
+    def do_samples(self, arg):
+        size = c_int()
+        self.lib.cvora_get_sample_size(self.fd, byref(size))
+        size = size.value
+        buffer = create_string_buffer(size+1)
+        actsize = c_int()
+        self.lib.cvora_read_samples(self.fd, size, byref(actsize), byref(buffer))
+        actsize = actsize.value
+        print '%d (%d) samples' % (size, actsize)
+        if False:
+            print '%di (%d) samples, buffer = [%x %x %x %x ... ]' % (
+                    size, actsize,
+                    ord(buffer[0]), ord(buffer[1]), ord(buffer[2]), ord(buffer[3]),)
+
     def do_quit(self, arg):
         return True
 
