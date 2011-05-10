@@ -11,7 +11,6 @@
 
 int cvora_init(int lun)
 {
-	int fd;
 	char fname[256];
 	int fnum;
 
