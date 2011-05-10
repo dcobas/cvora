@@ -7,8 +7,6 @@
 #include <string.h>
 #include <errno.h>
 #include "vmeio.h"
-
-#include "cvora_hard.h"
 #include "libcvora.h"
 
 int cvora_init(int lun)
@@ -166,7 +164,7 @@ int cvora_set_mode(int fd, enum cvora_mode mode)
 
 int cvora_get_hardware_status(int fd, unsigned int *status)
 {
-	return read_reg(fd, CVA_REG_RO_STATUS, status);
+	return read_reg(fd, CVORA_CONTROL, status);
 }
 
 int cvora_wait(int fd)
@@ -185,7 +183,7 @@ int cvora_get_sample_size(int fd, int *memsz)
 		return cc;
 	if (memp < CVORA_MEM_MIN || memp > CVORA_MEM_MAX)
 		return -EINVAL;
-	*memsz = memp - CVA_MEM_MIN;
+	*memsz = memp - CVORA_MEM_MIN;
 	return 0;
 }
 

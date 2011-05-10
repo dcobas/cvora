@@ -30,7 +30,7 @@ CFLAGS= -DCOMPILE_TIME=$(COMPILE_TIME) -g -Wall -fPIC
 
 libs: libcvora.$(CPU).a libcvora.$(CPU).so
 
-libcvora.$(CPU).o: libcvora.c libcvora.h cvora_hard.h
+libcvora.$(CPU).o: libcvora.c libcvora.h
 libcvora.$(CPU).so: libcvora.$(CPU).o
 	$(CC) $(CFLAGS) -shared -o $@ $^
 libcvora.$(CPU).a: libcvora.$(CPU).o
