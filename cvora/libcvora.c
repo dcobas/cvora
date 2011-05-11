@@ -223,7 +223,7 @@ int cvora_read_samples(int fd, int maxsz, int *actsz, unsigned int *buf)
 	riob.bsize = *actsz;
 	riob.buffer = buf;
 
-	if ((cc = ioctl(fd, VMEIO_RAW_WRITE_DMA, &riob)) != 0)
+	if ((cc = ioctl(fd, VMEIO_RAW_READ_DMA, &riob)) != 0)
 		return cc;
 
 	for (i = 0; i < (*actsz >> 2); i++)
