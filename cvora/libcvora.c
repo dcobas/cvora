@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <errno.h>
 #include "cvora.h"
@@ -192,14 +193,24 @@ int cvora_get_sample_size(int fd, int *memsz)
 		return cc;
 	if (memp < CVORA_MEM_MIN || memp > CVORA_MEM_MAX)
 		return -EINVAL;
-	*memsz = memp - CVORA_MEM_MIN;
+	*memsz = (memp - CVORA_MEM_MIN) << 2;
 	return 0;
+}
+
+static inline swab32(uint32_t x)
+{
+	return (((x & 0x000000ff) << 24) |
+		((x & 0x0000ff00) <<  8) |
+		((x & 0x00ff0000) >>  8) |
+		((x & 0xff000000) >> 24));
 }
 
 int cvora_read_samples(int fd, int maxsz, int *actsz, unsigned int *buf)
 {
 	int cc;
+	int i;
 	struct vmeio_riob_s riob;
+	uint32_t *buffer = (uint32_t *)buf;
 
 	if ((cc = cvora_get_sample_size(fd, actsz)) != 0)
 		return cc;
@@ -212,7 +223,12 @@ int cvora_read_samples(int fd, int maxsz, int *actsz, unsigned int *buf)
 	riob.bsize = *actsz;
 	riob.buffer = buf;
 
-	return ioctl(fd, VMEIO_RAW_WRITE_DMA, &riob);
+	if ((cc = ioctl(fd, VMEIO_RAW_WRITE_DMA, &riob)) != 0)
+		return cc;
+
+	for (i = 0; i < (*actsz >> 2); i++)
+		buffer[i] = swab32(buffer[i]);
+	return 0;
 }
 
 int cvora_soft_start(int fd)
