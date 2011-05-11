@@ -193,7 +193,7 @@ int cvora_get_sample_size(int fd, int *memsz)
 		return cc;
 	if (memp < CVORA_MEM_MIN || memp > CVORA_MEM_MAX)
 		return -EINVAL;
-	*memsz = (memp - CVORA_MEM_MIN) << 2;
+	*memsz = memp - CVORA_MEM_MIN;
 	return 0;
 }
 
