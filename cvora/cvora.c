@@ -106,7 +106,7 @@ MODULE_SUPPORTED_DEVICE("Any VME device");
 
 static long lun[DRV_MAX_DEVICES];	/* Logical unit numbers */
 static long level[DRV_MAX_DEVICES];	/* Interrupt levels */
-static long vectors[DRV_MAX_DEVICES];	/* Interrupt vectors */
+static long vector[DRV_MAX_DEVICES];	/* Interrupt vectors */
 static long base_address1[DRV_MAX_DEVICES];	/* First VME base address */
 static long base_address2[DRV_MAX_DEVICES];	/* Second VME base address */
 
@@ -145,7 +145,7 @@ static unsigned int isrc_num;	/* Normally this value is = "1" */
 
 module_param_array(lun, long, &luns_num, 0444);	/* Vector */
 module_param_array(level, long, &lvls_num, 0444);	/* Vector */
-module_param_array(vectors, long, &vecs_num, 0444);	/* Vector */
+module_param_array(vector, long, &vecs_num, 0444);	/* Vector */
 module_param_array(base_address1, long, &vme1_num, 0444);	/* Vector */
 module_param_array(base_address2, long, &vme2_num, 0444);	/* Vector */
 
@@ -160,7 +160,7 @@ module_param_array(isrc, long, &isrc_num, 0444);
 
 MODULE_PARM_DESC(lun, "Logical unit numbers");
 MODULE_PARM_DESC(level, "Interrupt levels");
-MODULE_PARM_DESC(vectors, "Interrupt vectors");
+MODULE_PARM_DESC(vector, "Interrupt vectors");
 MODULE_PARM_DESC(base_address1, "First map base addresses");
 MODULE_PARM_DESC(base_address2, "Second map base addresses");
 
@@ -620,7 +620,7 @@ int vmeio_install(void)
 
 		dev->isrc = isrc[i];
 		dev->lvl  = level[i];
-		dev->vec  = vectors[i];
+		dev->vec  = vector[i];
 		dev->nmap = nmap[i];
 
 		init_waitqueue_head(&dev->queue);
