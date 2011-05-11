@@ -229,8 +229,8 @@ int cvora_get_sample_size(int fd, int *memsz);
 /**
  * @brief Read memory sample buffer
  * @param fd  file descriptor returned from cvora_init
- * @param maxsz max size to read
- * @param actsz actual size read
+ * @param maxsz max byte size to read
+ * @param actsz actual byte size read
  * @param buf pointer to data area
  * @return 0 if OK, < 0 if error
  */
