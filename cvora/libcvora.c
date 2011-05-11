@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "vmeio.h"
+#include "cvora.h"
 #include "libcvora.h"
 
 int cvora_init(int lun)

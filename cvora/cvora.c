@@ -81,7 +81,7 @@
 #include <linux/interrupt.h>
 
 #include "vmebus.h"
-#include "vmeio.h"
+#include "cvora.h"
 
 #define TSI148_LCSR_DSTA_DON (1<<25)	/* DMA done */
 
