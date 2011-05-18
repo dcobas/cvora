@@ -1024,7 +1024,7 @@ static int raw_dma(struct vmeio_device *dev,
 	dma_desc.dst.data_width = map->data_width * 8;
 	dma_desc.dst.am = map->address_modifier;
 	dma_desc.src.data_width = map->data_width * 8;
-	dma_desc.src.am = map->address_modifier;
+	dma_desc.src.am = VME_A24_USER_BLT;
 
 	haddr = (unsigned int) map->base_address + riob->offset;
 
