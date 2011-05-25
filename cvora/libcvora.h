@@ -251,6 +251,13 @@ int cvora_soft_start(int fd);
 int cvora_soft_stop(int fd);
 
 /**
+ * @brief Issue a software soft rearm
+ * @param fd  file descriptor returned from cvora_init
+ * @return 0 if OK, < 0 if error
+ */
+int cvora_soft_rearm(int fd);
+
+/**
  * @brief read DAC
  * @param fd  file descriptor returned from cvora_init
  * @param dacv dac value

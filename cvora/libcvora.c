@@ -236,6 +236,10 @@ int cvora_soft_start(int fd)
 	return set_reg_bit(fd, CVORA_CONTROL, CVORA_SOFT_START_BIT, 1);
 }
 
+int cvora_soft_rearm(int fd)
+{
+	return set_reg_bit(fd, CVORA_CONTROL, CVORA_SOFT_REARM_BIT, 1);
+}
 
 int cvora_soft_stop(int fd)
 {
