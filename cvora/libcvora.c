@@ -101,47 +101,24 @@ int cvora_get_pulse_polarity(int fd, int *polarity)
 	return get_reg_bit(fd, CVORA_CONTROL, CVORA_POLARITY_BIT, polarity);
 }
 
-int cvora_set_module_enabled(int fd, int enabled)
+int cvora_enable_module(int fd)
 {
-	return set_reg_bit(fd, CVORA_CONTROL, CVORA_MODULE_ENABLE_BIT, enabled);
+	return set_reg_bit(fd, CVORA_CONTROL, CVORA_MODULE_ENABLE_BIT, 1);
 }
 
-int cvora_get_module_enabled(int fd, int *enabled)
+int cvora_disable_module(int fd)
 {
-	return get_reg_bit(fd, CVORA_CONTROL, CVORA_MODULE_ENABLE_BIT, enabled);
+	return set_reg_bit(fd, CVORA_CONTROL, CVORA_MODULE_ENABLE_BIT, 0);
 }
 
-int cvora_set_irq_enabled(int fd, int enabled)
+int cvora_enable_interrupts(int fd)
 {
-	return set_reg_bit(fd, CVORA_CONTROL, CVORA_INT_ENABLE_BIT, enabled);
+	return set_reg_bit(fd, CVORA_CONTROL, CVORA_INT_ENABLE_BIT, 1);
 }
 
-int cvora_get_irq_enabled(int fd, int *enabled)
+int cvora_disable_interrupts(int fd)
 {
-	return get_reg_bit(fd, CVORA_CONTROL, CVORA_INT_ENABLE_BIT, enabled);
-}
-
-int cvora_set_irq_vector(int fd, int vector)
-{
-	unsigned status;
-	int cc;
-
-	if ((cc = read_reg(fd, CVORA_CONTROL, &status)) != 0)
-		return cc;
-	status &= ~CVORA_VECTOR_MASK;
-	status |= vector << CVORA_VECTOR_BIT;
-	return 0;
-}
-
-int cvora_get_irq_vector(int fd, int *vector)
-{
-	unsigned status;
-	int cc;
-
-	if ((cc = read_reg(fd, CVORA_CONTROL, &status)) != 0)
-		return cc;
-	*vector = (status & CVORA_VECTOR_MASK) >> CVORA_VECTOR_BIT;
-	return 0;
+	return set_reg_bit(fd, CVORA_CONTROL, CVORA_INT_ENABLE_BIT, 0);
 }
 
 int cvora_get_mode(int fd, enum cvora_mode *mode)

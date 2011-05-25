@@ -148,66 +148,32 @@ int cvora_set_pulse_polarity(int fd, int polarity);
 int cvora_get_pulse_polarity(int fd, int *polarity);
 
 /**
- * @brief set module enable bit
+ * @brief enable module
  * @param fd  file descriptor returned from cvora_init
- * @param enabled (1 to enable, 0 to disable module)
  * @return 0 if OK, < 0 if error
  */
-int cvora_set_module_enabled(int fd, int enabled);
+int cvora_enable_module(int fd);
 
 /**
- * @brief get module enable bit
+ * @brief disable module
  * @param fd  file descriptor returned from cvora_init
- * @param enabled module status (1 = enabled, 0 = disabled)
  * @return 0 if OK, < 0 if error
  */
-int cvora_get_module_enabled(int fd, int *enabled);
+int cvora_disable_module(int fd);
 
 /**
- * @brief set IRQ status bit
- * @param fd  file descriptor returned from cvora_init
- * @param enabled 1 to enable interrupts, 0 to disable
- * @return 0 if OK, < 0 if error
- */
-int cvora_set_irq_enabled(int fd, int enabled);
-
-/**
- * @brief get IRQ status bit
- * @param fd  file descriptor returned from cvora_init
- * @param enabled 1 = interrupts enabled, 0 = ints disabled
- * @return 0 if OK, < 0 if error
- */
-int cvora_get_irq_enabled(int fd, int *enabled);
-
-/**
- * @brief enable interrupts from the module
+ * @brief enable interrupts
  * @param fd  file descriptor returned from cvora_init
  * @return 0 if OK, < 0 if error
  */
 int cvora_enable_interrupts(int fd);
 
 /**
- * @brief disable interrupts from the module
+ * @brief disable interrupts
  * @param fd  file descriptor returned from cvora_init
  * @return 0 if OK, < 0 if error
  */
 int cvora_disable_interrupts(int fd);
-
-/**
- * @brief set irq vector (DEPRECATED)
- * @param fd  file descriptor returned from cvora_init
- * @param vector vector value
- * @return 0 if OK, < 0 if error
- */
-int cvora_set_irq_vector(int fd, int vector);
-
-/**
- * @brief get irq vector (DEPRECATED)
- * @param fd  file descriptor returned from cvora_init
- * @param vector IRQ vector value
- * @return 0 if OK, < 0 if error
- */
-int cvora_get_irq_vector(int fd, int *vector);
 
 /**
  * @brief wait for end of sample interrupt.
