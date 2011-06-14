@@ -540,6 +540,11 @@ void register_int_source(struct vmeio_device *dev, void *map, unsigned offset)
 	printk("SourceRegister:0x%p", dev->isr_source_address);
 }
 
+void set_interrrupt_vector(unsigned int vec)
+{
+	
+}
+
 /*
  * =====================================================
  * Install
@@ -668,9 +673,15 @@ int vmeio_install(void)
 					map1->window_size, map1->address_modifier);
 
 		if (dev->lvl && dev->vec) {
+			unsigned int cr;
+
 			register_isr(dev, dev->vec, dev->lvl);
 			if (isrc_num)
 				register_int_source(dev, map0->vaddr, dev->isrc);
+			/* set cvora interrupt vector */
+			cr = ioread32be(map0->vaddr);
+			cr |= ((dev->vec & 0xff) << 8);
+			iowrite32be(cr, map0->vaddr);
 		}
 	}
 	return 0;
