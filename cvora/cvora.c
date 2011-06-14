@@ -517,7 +517,7 @@ static void vmeio_map_register(struct vmeio_map *map)
 static void vmeio_map_unregister(struct vmeio_map *map)
 {
 	if (map->base_address)
-		return_controller(map->base_address, map->window_size);
+		return_controller((unsigned long)map->vaddr, map->window_size);
 	if (map->bus_error_handler)
 		vme_unregister_berr_handler(map->bus_error_handler);
 }
@@ -685,9 +685,9 @@ void unregister_module(struct vmeio_device *dev) {
 	if (dev->vec)
 		vme_intclr(dev->vec, NULL);
 	if (map0->base_address)
-		return_controller((unsigned long)map0->base_address, map0->window_size);
+		return_controller((unsigned long)map0->vaddr, map0->window_size);
 	if (map1->base_address)
-		return_controller((unsigned long)map1->base_address, map1->window_size);
+		return_controller((unsigned long)map1->vaddr, map1->window_size);
 	if (map0->bus_error_handler)
 		vme_unregister_berr_handler(map0->bus_error_handler);
 	if (map1->bus_error_handler)
