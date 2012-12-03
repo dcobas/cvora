@@ -73,7 +73,7 @@ static int get_reg_bit(int fd, unsigned offset, unsigned bit,
 
 	if ((cc = read_reg(fd, offset, &contents)) != 0)
 		return cc;
-	contents &= ~(1 << bit);
+	contents &= 1 << bit;
 	contents >>= bit;
 	*value = contents;
 	return 0;
