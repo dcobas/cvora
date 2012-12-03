@@ -3,10 +3,14 @@
 
 import cmd
 import sys
+import os
+import os.path
 from ctypes import *
 import struct
 
-libcvora = '../libcvora.L865.so'
+testpath = os.readlink(sys.argv[0])
+testdir  = os.path.dirname(testpath)
+libcvora = os.path.join(testdir, 'libcvora.so')
 
 class CvoraCmd(cmd.Cmd):
 
