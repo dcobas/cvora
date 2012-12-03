@@ -151,7 +151,7 @@ int cvora_set_timeout(int fd, int timeout)
 
 int cvora_get_timeout(int fd, int *timeout)
 {
-	return ioctl(fd, VMEIO_SET_TIMEOUT, timeout);
+	return ioctl(fd, VMEIO_GET_TIMEOUT, timeout);
 }
 
 int cvora_wait(int fd)
