@@ -100,11 +100,12 @@ class CvoraCmd(cmd.Cmd):
     def do_quit(self, arg):
         return True
 
-    do_q = do_quit
-
     def do_EOF(self, arg):
         print
         return True
+
+    do_q = do_quit
+    do_h = cmd.Cmd.do_help
 
 if __name__ == '__main__':
 
