@@ -8,7 +8,7 @@ import os.path
 from ctypes import *
 import struct
 
-testpath = os.readlink(sys.argv[0])
+testpath = os.path.realpath(sys.argv[0])
 testdir  = os.path.dirname(testpath)
 libcvora = os.path.join(testdir, 'libcvora.so')
 
