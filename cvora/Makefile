@@ -19,7 +19,6 @@ modules:
 clean:
 	rm -f *.so
 	make -C $(KERNELSRC) M=`pwd` KVER=$(KVER) clean
-	make -C test clean
 	make -C doc clean
 docs:
 	make -C doc
