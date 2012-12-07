@@ -56,4 +56,5 @@ cat $(dirname $0)/default.doxycfg | \
     sed "s!__MAGIC_PROJECT_NAME__!$NAME!" | \
     sed "s!__MAGIC_OUTPUT_DIRECTORY__!$OUTPUT_DIR!" | \
     sed "s!__MAGIC_INPUT__!$*!" | \
+    sed "/^[ 	]*QUIET[ 	]/s!.*!QUIET	= YES!" | \
     doxygen -
